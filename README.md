@@ -1,3 +1,5 @@
+<img width="1919" height="896" alt="image" src="https://github.com/user-attachments/assets/887fb0b7-edd6-41f4-babb-9dc1b927fa2a" />
+
 # Calendly Clone - SDE Intern Assignment
 
 A fully functional scheduling/booking web application that closely replicates Calendly's design and user experience. This project demonstrates modern full-stack development practices with a clean, modular architecture.
