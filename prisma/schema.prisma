@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  timezone  String    @default("UTC")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  eventTypes   EventType[]
+  availability Availability[]
+  meetings     Meeting[]
+}
+
+model EventType {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  duration      Int       // in minutes
+  slug          String    @unique
+  bufferBefore  Int       @default(0) // in minutes
+  bufferAfter   Int       @default(0) // in minutes
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  meetings Meeting[]
+
+  @@unique([userId, slug])
+}
+
+model Availability {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int       // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime String    // "HH:mm" format
+  endTime   String    // "HH:mm" format
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, dayOfWeek])
+}
+
+model Meeting {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventTypeId Int
+  eventType   EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  inviteeName String
+  inviteeEmail String
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
